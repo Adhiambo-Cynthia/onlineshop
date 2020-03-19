@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>learning Vue</title>
+</head>
+<body>
+    <div id="app">
+        <h1>{{ title}}</h1>
+
+        <ul>
+            <li v-for="todo in items">{{todo}}</li>
+        </ul>
+        <input type="text" v-model="item">
+        <button @click="items.push(item)">Add item</button>
+        <p v-html="content" ></p>
+        <input type="text" v-model="content">
+        <button @click="reverseTitle">Reverse Title</button>
+        <ul>
+            <li v-for="fruit in fruits" v-if="fruit.fruit">{{fruit.name}}</li>
+            
+        </ul>
+        <!--methods and computed properties-->
+        <h3>methods and computed properties</h3>
+        <div>B-Price: {{moneyformat(price)}} </div>
+        <input type="number" v-model="price"> 
+        <div>S-Price: {{moneyformat(sp)}} </div>
+        <div>Profit:{{moneyformat(profit)}}</div> <!--pass it as an int-->
+        <!-- vue components ,Components are reusable Vue instances with a name-->
+        <button-counter></button-counter>
+        <button-counter></button-counter>
+        <!--Notice that when clicking on the buttons, each one maintains its own, separate count. 
+            That’s because each time you use a component, a new instance of it is created.-->
+        <accordion v-for='blog in blogs' :key='blog.id' :blog='blog'></accordion>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> 
+    <script>
+        Vue.component('button-counter', {
+           data: function () {
+                    return {count: 0}
+                                          },
+            template: '<button v-on:click="count++">You clicked me {{ count }} times.</button>'
+                       })
+//a component’s data option must be a function, so that each instance can maintain an independent copy of the returned data object
+        Vue.component('accordion',{
+            props: ['blog'],
+            template: `<div>
+                      <h4 v-on:click="toggle=!toggle">{{blog.name}}-click title to show author</h4> 
+                       <small v-if="toggle">By {{blog.author}}</small>
+                       </div>`,
+                       
+            data:function(){
+                return{ toggle: false}
+            }
+        })               
+        new Vue({
+            el: '#app',
+            data:{
+            title: 'To do List',
+            content:'I find vue quite easier to learn',
+            item: '',
+            items:[ 'wash the utensils','prepare breakfast'],
+            fruits: [
+                {name: 'mango', fruit: true},
+                {name: 'banana', fruit: true},
+                {name: 'bread', fruit: false}
+            ],
+            blogs: [
+                {id:1,name: 'mango-chronicles', author:"brian"},
+                {id:2,name: 'banana-tape', author:"kevin"},
+                {id:3,name: 'bread-winner', author:"cindy"}
+            ],
+            price:100
+            },
+            methods: {
+                 reverseTitle: function () {
+                  this.title = this.title.split('').reverse().join('')
+                   },
+                   //methods are actual functions and can take in parameters unlike computed properties
+                 moneyformat: function(price){
+                     return "$" + price
+                 }  },
+                //<!--A computed property will only re-evaluate when some of its reactive dependencies have changed,
+                //meaning Date.now will never update coz it has no dependancies property-->
+
+            computed: {       
+                 sp:  function(){
+                     return this.price * 1.4
+                 },
+                 profit: function(){
+                     return this.sp- this.price
+                 }
+                   }
+                   
+                   })
+    </script>
+
+     
+</body>
+</html>

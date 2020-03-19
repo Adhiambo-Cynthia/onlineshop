@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online-Shop</title>
+    <link href="shop.css" rel="stylesheet">
+</head>
+<body>
+    <div class="nav-bar">
+        <h1>CAD Online-Shop</h1>
+    </div>
+ <div id="app">
+    <div><p id="p1">What are you looking for?</p>
+        <input type="text" v-model="product">
+    </div>
+    <div class="clr"></div>
+     <div class="product">
+         <div class="product-image">
+             <img v-bind:src="image">
+         </div>
+         <div class="product-info">
+            <h2 v-html="product"></h2>
+            <!-- <p v-if="inStock">In Stock</p> -->
+            <p v-if="inventory>10"  v-if="inStock">In Stock</p>
+            <p v-else-if="inventory>0 && inventory<=10">Almost sold out</p>
+            <p v-else :style="{textDecoration:lineThrough}">Out of Stock</p>
+            <!-- <p v-else>Out of Stock</p> -->
+            <ul>
+                <li v-for="detail in details">{{detail}}</li>
+            </ul>
+            <h4>Current colors in Stock</h4>
+            <div id="colors">
+                <ul>
+                    <li v-for="variant in variants" :key="variant.id" :style="{backgroundColor:variant.color}" @mouseover="updateimage(variant.shoeimage)">{{variant.color}}</li>
+                </ul>
+            <h4>Current sizes in Stock</h4>
+            <ul>
+                <li v-for="size in sizes">{{size}}</li>
+            </ul>
+            </div>
+            <button id="add" @click="addtocart" :disabled="!inStock" :class="{disabledbutn:!inStock}">ADD TO CART</button>
+            
+            <p class="cart">Cart({{cart}})</p>
+        
+     </div>
+ </div> 
+ <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> 
+ <script src="shop.js"></script> 
+</body>
+</html>
