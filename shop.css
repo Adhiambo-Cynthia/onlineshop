@@ -28,7 +28,7 @@ body {
     padding: 5px;
     float: left;
 } 
-input{
+#search{
     width: 30%;
     height: 50px;
     margin-right: 400px;
@@ -37,7 +37,7 @@ input{
     float: right;
     transition: width 0.4s;
 } 
-input:focus {
+#search:focus {
     width: 40%;
     border-color: coral;
     margin-right: 100px;
@@ -55,8 +55,48 @@ img {
       
 .product-image {
         width: 50%;
-        
 }
+.product-info{
+    width:fit-content;
+    
+}
+.product-review{
+    background-color: cadetblue;
+    height: 400px;
+    width: fit-content;
+    margin-left: 20px;
+    padding: 10px;
+    margin-right: 10px;
+}
+input{
+    margin-top: 15px;
+    width:80%;
+    height: 30px;
+}
+.radio{
+    width: 20px;
+    background-color: rgb(228, 167, 182);
+}
+#comments{
+    
+    background-color: rgb(228, 167, 182);
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    margin-left: 20px;
+    
+}
+#display{
+    font-weight: bold;
+    font-size: medium;
+}
+#errors{
+    color: red;
+    list-style: none;
+}
+
+
+
 #colors li{
     list-style: none;
     display: inline;
@@ -107,3 +147,12 @@ button:hover{
     from {font-size: 20px;}
     to {font-size: 23px;}
   }
+.tab {
+    margin-left: 20px;
+    cursor: pointer;
+  }
+
+.activeTab {
+    color: #16C0B0;
+    text-decoration: underline;
+  }  
