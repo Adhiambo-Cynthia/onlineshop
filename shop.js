@@ -1,22 +1,23 @@
 var eventBus= new Vue()
 Vue.component('productprof',{
+    props:['product'],
     template:`
     <div class="product">
          <div class="product-image">
              <img v-bind:src="image">
          </div>
          <div class="product-info">
-            <h2 v-html="productname"></h2>
+            <h2>{{product.productname}}</h2>
             <p :class='{notStock:!inStock, inStock:inStock}'>{{determineStock}}</p>
             <!-- <p v-if="inStock">In Stock</p>-->
             <ul>
-                <li v-for="detail in details">{{detail}}</li>
+                <li v-for="detail in product.details">{{detail}}</li>
             </ul>
             
             <h4>Current colors in Stock</h4>
             <div id="colors">
                 <ul>
-                    <li v-for="(variant,index) in variants" :key="variant.id" :style="{backgroundColor:variant.color}" @mouseover="updateProduct(index)">{{variant.color}}</li>
+                    <li v-for="(variant,index) in product.variants" :key="variant.id" :style="{backgroundColor:variant.color}" @mouseover="updateProduct(index)">{{variant.color}}</li>
                 </ul>
             <h4>Current sizes in Stock</h4>
             <ul>
@@ -28,26 +29,20 @@ Vue.component('productprof',{
         </div>
         
         
-       <product-tabs :reviews="reviews"></product-tabs>
+       <product-tabs></product-tabs>
         
         
         
      </div>`,
      data(){
          return{
-            productname: "Nike running Shoes",
-            // image: 'img/black.JPG',
             selectedVariant:0,
             inStock: true,
             inLine:'inline',
             
             // lineThrough:'line-through',
-            details:["Gender-neutral","40% cotton","Thick rubber sole","Gym and track exercising","multiple colors"],
-            variants:[
-                { id: 11, color:"black", shoeimage:'img/black.JPG',inventory:100},
-                { id:22, color:"pink",shoeimage:'img/pink.JPG',inventory:10 },
-                { id:33, color:"red",shoeimage:'img/red.JPG',inventory:0}
-            ],
+            
+            
             sizes:[8,9.10,11,12],
             checked: false,
             reviews:[] 
@@ -57,10 +52,10 @@ Vue.component('productprof',{
      },
      methods:{
         addtocart: function(){
-            this.$emit('adding-cart', this.variants[this.selectedVariant].id)
+            this.$emit('adding-cart', this.product.variants[this.selectedVariant].id)
         },
         removefromcart: function(){
-            this.$emit('removing-cart', this.variants[this.selectedVariant].id)
+            this.$emit('removing-cart', this.product.variants[this.selectedVariant].id)
         },
         updateProduct: function(index){
             this.selectedVariant= index},
@@ -72,7 +67,7 @@ Vue.component('productprof',{
     },
     computed:{
         determineStock: function(){
-            var stock= this.variants[this.selectedVariant].inventory
+            var stock= this.product.variants[this.selectedVariant].inventory
             if (stock>10){
                 this.inStock=true
             return "In Stock"}
@@ -83,15 +78,11 @@ Vue.component('productprof',{
                 return'Almost Sold out!'}
         },
         image(){
-         return this.variants[this.selectedVariant].shoeimage
+         return this.product.variants[this.selectedVariant].shoeimage
         }
     
-    },
-    mounted(){
-        eventBus.$on('review-submitted', productReview =>{
-            this.reviews.push(productReview)
-        })
     }
+    
 }
 
 )
@@ -160,7 +151,8 @@ Vue.component('product-review',{
             rating:this.rating,
             recommend:this.recommend
         } 
-        eventBus.$emit('review-submitted',productReview) 
+        // eventBus.$emit('review-submitted',productReview) 
+        this.$emit('review-submitted',productReview)
         this.name=null,
         this.review=null,
         this.rating=null,
@@ -177,7 +169,7 @@ Vue.component('product-review',{
   }
 }) 
 Vue.component('product-tabs',{
-    props:['reviews'],
+    
     template:`
     <div>
     <span class="tab" :class="{activeTab:selectedTab === tab}"
@@ -188,25 +180,71 @@ Vue.component('product-tabs',{
         <h3>Reviews</h3>
         <p v-if="!reviews.length" >No reviews yet!</p>
         <ul >
-        <li v-for="(review,index) in reviews" :key="index" :style="{display:inLine}">
+        <li v-for="(review,index) in reviews" :key="index">
          <p id="display" >{{review.name}}<br>Review: {{review.review}}<br>Recommend: {{review.recommend}}<br>Rating: {{review.rating}}</p>
          
          </li>
         </ul>
         </div>
-        <product-review  v-show="selectedTab==='Make Review'"></product-review>
+        <product-review @review-submitted="addReview"  v-show="selectedTab==='Make Review'"></product-review>
     </div>`,
     data(){
         return{
             tabs:['Reviews',"Make Review"],
-            selectedTab: 'Reviews'
+            selectedTab: 'Reviews',
+            reviews:[]
+        }
+    },
+    methods:{
+        // mounted(){
+        //     eventBus.$on('review-submitted', productReview =>{
+        //         this.reviews.push(productReview)
+        //        })}
+        //when communicating between parent and child...dont use eventbus
+        addReview(productReview){
+            this.reviews.push(productReview)  
         }
     }
 })
 var app= new Vue({
     el: "#app",
      data:{
-        cart: []
+        cart: [],
+        products:[
+            {proID:1, productname:'Nike running shoes',
+             details:["Gender-neutral","40% cotton","Thick rubber sole","Gym and track exercising","multiple colors"],
+             variants:[
+                { id: 10, color:"black", shoeimage:'img/black.JPG',inventory:100},
+                { id:20, color:"pink",shoeimage:'img/pink.JPG',inventory:10 },
+                { id:30, color:"red",shoeimage:'img/red.JPG',inventory:0}
+            ]
+            },
+            {proID:2, productname:'Gucci Sneakers',
+             details:[" 60% Leather","Kids Collection available","Firm sole/heel","All ages","multiple colors"],
+             variants:[
+                { id: 11, color:"black", shoeimage:'img/gB.JPG',inventory:100},
+                { id:22, color:"red",shoeimage:'img/gR.JPG',inventory:10 },
+                { id:33, color:"blue",shoeimage:'img/gBl.JPG',inventory:0}
+            ]
+            },
+            {proID:2, productname:'Channel Heels',
+             details:["Comfy for long hours","Not itchy","Firm sole/heel","All ages","multiple colors"],
+             variants:[
+                { id: 12, color:"black", shoeimage:'img/heels1.JPG',inventory:100},
+                { id:24, color:"red",shoeimage:'img/heels2.JPG',inventory:0 },
+                { id:36, color:"blue",shoeimage:'img/heels3.JPG',inventory:10}
+            ]
+            },
+            {proID:2, productname:'Sussany Seude boots',
+             details:[" Waterproof","Kids Collection available","6 inch classic","leather 70%","All seasons"],
+             variants:[
+                { id: 13, color:"black", shoeimage:'img/boots2.JPG',inventory:100},
+                { id:26, color:"brown",shoeimage:'img/boots3.JPG',inventory:10 },
+                { id:39, color:"blue",shoeimage:'img/boots1.JPG',inventory:0}
+            ]
+            }
+
+        ]
      },
     methods:{
         updateCart(id){
@@ -219,7 +257,8 @@ var app= new Vue({
                  this.cart.splice(i, 1);
               }
             }
-          } 
+          },
+         
         
     }})
     

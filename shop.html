@@ -17,15 +17,16 @@
         <p class="cart" >Cart({{cart.length}})</p>
     </div> 
     <div class="clr"></div>
-    <productprof @adding-cart='updateCart' @removing-cart='reupdateCart'></productprof>
+    <div></div>
+    <productprof v-for="(product,index) in products" :key="index" :product="product" @adding-cart='updateCart' @removing-cart='reupdateCart'></productprof>
     
     
-    <!-- v-for="productname in productnames" :productname='productname' :key='productname.id' -->
+    
     
     
      
  </div> 
- <script src="https://kit.fontawesome.com/01fc60fbaf.js" crossorigin="anonymous"></script>
+ 
  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> 
  <script src="shop.js"></script> 
 </body>
